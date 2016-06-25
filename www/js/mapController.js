@@ -1,6 +1,9 @@
 'use strict';
 
-angular.module('starter.controllers').controller('MapController', function ($scope, PinService) {
+angular.module('starter.controllers').controller('MapController', function ($scope, Auth, PinService) {
+  $scope.Auth = Auth;
+  $scope.PinService = PinService;
+
   $scope.$on('$ionicView.enter', function () {
     initialize();
   });
@@ -10,7 +13,10 @@ angular.module('starter.controllers').controller('MapController', function ($sco
   });
 
   function initialize() {
-    $scope.PinService = PinService;
+    $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
+      $scope.user = firebaseUser;
+    });
+
     $scope.pins = PinService.approvedPins;
 
     $scope.markers = [];
@@ -54,8 +60,19 @@ angular.module('starter.controllers').controller('MapController', function ($sco
   };
 
   $scope.buildContentString = function (pin) {
-    var output = "<a class='map-info-titleLink' href='#/tab/pins/" + pin.$id + "'>" + (pin.name ? pin.name : pin.short_address) + "</a>";
-    if (pin.opening_hours && pin.opening_hours.open_now) {}
+    var output = '';
+    if ($scope.PinService.isFavorite(pin, $scope.user.uid)) {
+      output += '<i class="icon ion-ios-star energized"></i>';
+    }
+    if (pin.flagged) {
+      output += '<i class="icon ion-ios-flag assertive pb-overlay-icon"></i>';
+    }
+
+    output += "<a class='map-info-titleLink' href='#/tab/pins/" + pin.$id + "'>" + (pin.name ? pin.name : pin.short_address) + "</a>";
+
+    // todo
+    // if (pin.opening_hours && pin.opening_hours.open_now) {
+    // }
 
     output += "<div><a class='map-info-DirectionsLink' href='https://www.google.com/maps/place/" + pin.address + "'>Directions</a></div>";
     // todo: show icon if currently open

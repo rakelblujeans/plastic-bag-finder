@@ -8,6 +8,10 @@
   margin-right: 5px;
 }
 
+.pb-overlay-icon {
+  padding: 2px;
+}
+
 /*------ Map --------------------------*/
 
 .scroll {

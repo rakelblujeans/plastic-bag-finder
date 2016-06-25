@@ -67,7 +67,7 @@
               ng-if="!pin.flagged">
             <i class="icon ion-ios-flag-outline"></i>
           </button>
-          <button class="button button-clear button-positive" ng-click="unflag(pin)"
+          <button class="button button-clear button-assertive" ng-click="unflag(pin)"
               ng-if="pin.flagged">
             <i class="icon ion-ios-flag"></i>
           </button>
@@ -108,11 +108,11 @@
               ng-if="::isAdmin">
             <i class="icon ion-trash-b"></i>
           </button>
-          <button class="button button-clear button-assertive" ng-click="flag(pin)"
+          <button class="button button-clear button-positive" ng-click="flag(pin)"
               ng-if="!pin.flagged">
             <i class="icon ion-ios-flag-outline"></i>
           </button>
-          <button class="button button-clear button-balanced" ng-click="unflag(pin)"
+          <button class="button button-clear button-assertive" ng-click="unflag(pin)"
               ng-if="pin.flagged">
             <i class="icon ion-ios-flag"></i>
           </button>
