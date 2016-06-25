@@ -13,6 +13,7 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
 
   // any time auth state changes, add the user data to scope
   $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
+    $scope.user = firebaseUser;
     if (!firebaseUser) {
       $scope.admin = null;
     }
@@ -59,7 +60,8 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
    */
   $scope.flag = function (pin) {
     $scope.PinService.flag(pin);
-    // todo: moderator notifications
+    // todo: moderator notifications, allow people to leave a
+    // comment on why they're flagging
   };
 
   $scope.unflag = function (pin) {
@@ -82,17 +84,17 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
     return PinService.isApproved(pin);
   };
 
-  // $scope.favorite = function(pin) {
-  //   $scope.PinService.addToFavorites(pin, $scope.firebaseUser.uid);
-  // }
+  $scope.favorite = function (pin) {
+    $scope.PinService.addToFavorites(pin, $scope.user.uid);
+  };
 
-  // $scope.unfavorite = function(pin) {
-  //   $scope.PinService.removeFromFavorites(pin, $scope.firebaseUser.uid);
-  // }
+  $scope.unfavorite = function (pin) {
+    $scope.PinService.removeFromFavorites(pin, $scope.user.uid);
+  };
 
-  // $scope.isFavorite = function(pin) {
-  //   $scope.PinService.isFavorite(pin, $scope.firebaseUser.uid);
-  // }
+  $scope.isFavorite = function (pin) {
+    return $scope.PinService.isFavorite(pin, $scope.user.uid);
+  };
 
   $scope.openAddPanel = function () {
     $scope.newPin = {};

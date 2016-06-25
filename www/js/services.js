@@ -164,29 +164,37 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
     }
   };
 
-  // var addToFavorites = function(pin, uid) {
-  //   if (!pin.favorites) {
-  //     pin.favorites =
-  //   }
+  var addToFavorites = function addToFavorites(pin, uid) {
+    if (!pin.favorites) {
+      pin.favorites = [];
+    }
 
-  //   var idx = pin.favorites.indexOf(uid);
-  //   if (idx == -1) {
-  //     pin.favorites.push(uid);
-  //   }
-  //   _save(pin);
-  // }
+    var idx = pin.favorites.indexOf(uid);
+    if (idx == -1) {
+      pin.favorites.push(uid);
+      _save(pin);
+    }
+  };
 
-  // var removeFromFavorites = function(pin, uid) {
-  //   var idx = pin.favorites.indexOf(uid);
-  //   if (idx > -1) {
-  //     pin.favorites.push(pop);
-  //   }
-  //   _save(pin);
-  // }
+  var removeFromFavorites = function removeFromFavorites(pin, uid) {
+    if (!pin || !pin.favorites) {
+      return;
+    }
 
-  // var isFavorite = function(pin, uid) {
-  //   return pin && pin.favorites && pin.favorites.indexOf(uid);
-  // }
+    var idx = pin.favorites.indexOf(uid);
+    if (idx > -1) {
+      pin.favorites = pin.favorites.splice(idx, 1);
+      _save(pin);
+    }
+  };
+
+  var isFavorite = function isFavorite(pin, uid) {
+    if (!pin || !pin.favorites) {
+      return false;
+    }
+
+    return pin.favorites.indexOf(uid) > -1;
+  };
 
   return {
     approvedPins: approvedPins,
@@ -197,9 +205,9 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
     unapprove: unapprove,
     flag: flag,
     unflag: unflag,
-    isApproved: isApproved
-    // addToFavorites: addToFavorites,
-    // removeFromFavorites: removeFromFavorites,
-    // isFavorite: isFavorite
+    isApproved: isApproved,
+    addToFavorites: addToFavorites,
+    removeFromFavorites: removeFromFavorites,
+    isFavorite: isFavorite
   };
 });

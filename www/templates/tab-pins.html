@@ -71,10 +71,10 @@
             <i class="icon ion-ios-checkmark-outline"></i>
           </button>
 
-          <button ng-show="false" class="button button-positive" ng-click="favorite(pin)">
+          <button class="button button-positive" ng-click="favorite(pin)" ng-if="!isFavorite(pin)" >
             <i class="icon ion-ios-star-outline"></i>
           </button>
-          <button ng-show="false" class="button button-positive" ng-click="unfavorite(pin)">
+          <button class="button button-positive" ng-click="unfavorite(pin)" ng-if="isFavorite(pin)">
             <i class="icon ion-ios-star"></i>
           </button>
 
@@ -107,6 +107,13 @@
           </button>
           <button class="button button-positive" ng-click="unapprove(pin)" ng-if="isApproved(pin)">
             <i class="icon ion-ios-checkmark"></i>
+          </button>
+
+          <button class="button button-positive" ng-click="favorite(pin)" ng-if="!isFavorite(pin)" >
+            <i class="icon ion-ios-star-outline"></i>
+          </button>
+          <button class="button button-positive" ng-click="unfavorite(pin)" ng-if="isFavorite(pin)">
+            <i class="icon ion-ios-star"></i>
           </button>
 
         </div>
