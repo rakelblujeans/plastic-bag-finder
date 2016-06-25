@@ -1,10 +1,11 @@
-<!--
-  This template loads for the 'tab.friend-detail' state (app.js)
-  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
-  The FriendsCtrl pulls data from the Friends service (service.js)
-  The Friends service returns an array of friend data
--->
-<ion-view view-title="{{::pin.name}}">
+<ion-view>
+    <ion-nav-title>
+      <p>
+        <img class="bag-logo" src="img/bag.svg">
+        <span>{{::(pin.name ? pin.name : 'Location Detail')}}</span>
+      </p>
+    </ion-nav-title>
+
   <ion-content class="padding pinDetail">
     <a ng-href="{{::pin.url}}" ng-if="::pin.url">
       <span ng-bind-html="::pin.adr_address"></span>

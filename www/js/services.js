@@ -11,13 +11,13 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
 
   var login = function login() {
     Auth.$signInWithPopup("google").then(function (firebaseUser) {
-      console.log("Signed in as:", firebaseUser.user);
+      // console.log("Signed in as:", firebaseUser.user);
       // TODO: for now, save everyone as admin. remove this later
       firebase.database().ref('/userRoles/' + firebaseUser.user.uid).set({
         role: 'admin'
       });
     }).catch(function (error) {
-      console.log("Authentication failed:", error);
+      // console.log("Authentication failed:", error);
     });
   };
 
@@ -28,9 +28,9 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
   var closeAccount = function closeAccount() {
     // Delete the currently signed-in user
     Auth.$deleteUser().then(function () {
-      console.log("User deleted successfully");
+      // console.log("User deleted successfully");
     }).catch(function (error) {
-      console.log("Error deleting user:", error);
+      // console.log("Error deleting user:", error);
     });
   };
 

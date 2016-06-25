@@ -1,11 +1,11 @@
-/*------ Splash Screen --------------------------*/
+/*------ Header --------------------------*/
 
-.splashContent {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  text-align: center;
+.bag-logo {
+  display: inline;
+  float: left;
+  height: 44px;
+  margin-top: 3px;
+  margin-right: 5px;
 }
 
 /*------ Map --------------------------*/
@@ -117,6 +117,10 @@
   }
 }
 
+.account-bag-img {
+  height: 175px;
+}
+
 .account-user-content {
   flex: 2;
   align-self: stretch;
@@ -128,10 +132,6 @@
 }
 
 .account-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   flex: 1;
   text-align: center;
 }
