@@ -55,26 +55,33 @@
           <small>Last updated {{formatDate(pin.updatedAt)}}</small>
         </p>
 
-        <a href="#/tab/pins/{{pin.$id}}" class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
+        <a href="#/tab/pins/{{pin.$id}}"
+            class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
 
         <div class="buttons" ng-if="::isAdmin">
-          <button class="button button-positive" ng-click="remove(pin)">
+          <button class="button button-clear button-positive" ng-click="remove(pin)"
+              ng-if="::isAdmin">
             <i class="icon ion-trash-b"></i>
           </button>
-          <button class="button button-positive" ng-click="flag(pin)" ng-if="!pin.flagged">
+          <button class="button button-clear button-positive" ng-click="flag(pin)"
+              ng-if="!pin.flagged">
             <i class="icon ion-ios-flag-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unflag(pin)" ng-if="pin.flagged">
+          <button class="button button-clear button-positive" ng-click="unflag(pin)"
+              ng-if="pin.flagged">
             <i class="icon ion-ios-flag"></i>
           </button>
-          <button class="button button-positive" ng-click="approve(pin)" ng-if="!isApproved(pin)">
+          <button class="button button-clear button-positive" ng-click="approve(pin)"
+              ng-if="!isApproved(pin) && isAdmin">
             <i class="icon ion-ios-checkmark-outline"></i>
           </button>
 
-          <button class="button button-positive" ng-click="favorite(pin)" ng-if="!isFavorite(pin)" >
+          <button class="button button-clear button-positive" ng-click="favorite(pin)"
+              ng-if="!isFavorite(pin)" >
             <i class="icon ion-ios-star-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unfavorite(pin)" ng-if="isFavorite(pin)">
+          <button class="button button-clear button-energized" ng-click="unfavorite(pin)"
+              ng-if="isFavorite(pin)">
             <i class="icon ion-ios-star"></i>
           </button>
 
@@ -93,26 +100,33 @@
           <small>Last updated {{formatDate(pin.updatedAt)}}</small>
         </p>
 
-        <a href="#/tab/pins/{{pin.$id}}" class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
+        <a href="#/tab/pins/{{pin.$id}}"
+            class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
 
         <div class="buttons" ng-if="::isAdmin">
-          <button class="button button-positive" ng-click="remove(pin)">
+          <button class="button button-clear button-positive" ng-click="remove(pin)"
+              ng-if="::isAdmin">
             <i class="icon ion-trash-b"></i>
           </button>
-          <button class="button button-positive" ng-click="flag(pin)" ng-if="!pin.flagged">
+          <button class="button button-clear button-assertive" ng-click="flag(pin)"
+              ng-if="!pin.flagged">
             <i class="icon ion-ios-flag-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unflag(pin)" ng-if="pin.flagged">
+          <button class="button button-clear button-balanced" ng-click="unflag(pin)"
+              ng-if="pin.flagged">
             <i class="icon ion-ios-flag"></i>
           </button>
-          <button class="button button-positive" ng-click="unapprove(pin)" ng-if="isApproved(pin)">
+          <button class="button button-clear button-balanced" ng-click="unapprove(pin)"
+              ng-if="isApproved(pin) && isAdmin">
             <i class="icon ion-ios-checkmark"></i>
           </button>
 
-          <button class="button button-positive" ng-click="favorite(pin)" ng-if="!isFavorite(pin)" >
+          <button class="button button-clear button-positive" ng-click="favorite(pin)"
+              ng-if="!isFavorite(pin)" >
             <i class="icon ion-ios-star-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unfavorite(pin)" ng-if="isFavorite(pin)">
+          <button class="button button-clear button-energized" ng-click="unfavorite(pin)"
+              ng-if="isFavorite(pin)">
             <i class="icon ion-ios-star"></i>
           </button>
 

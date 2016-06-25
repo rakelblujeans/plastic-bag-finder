@@ -183,7 +183,7 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
 
     var idx = pin.favorites.indexOf(uid);
     if (idx > -1) {
-      pin.favorites = pin.favorites.splice(idx, 1);
+      pin.favorites.splice(idx, 1);
       _save(pin);
     }
   };
