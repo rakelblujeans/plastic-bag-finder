@@ -1,9 +1,46 @@
-<ion-view view-title="Account">
-  <ion-content>
-    <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    </ion-list>
+<ion-view view-title="Your Account">
+  <ion-content class="padding">
+  <div class="accountContent">
+    <h1 class="account-title">Plastic Bag Recyling Finder</h1>
+
+    <div class="account-user-content">
+      <p>
+        Get rid of that pile lurking underneath your kitchen sink. Do something good
+        for the world.
+      </p>
+
+      <p ng-if="!user">
+        You don't need an account to use the app, but if you create one you'll be able to
+        save your favorite locations!
+      </p>
+
+      <button class="button button-large button-outline button-balanced account-auth-btn"
+          ng-click="login()" ng-show="!user">
+        Login
+      </button>
+
+      <button class="button button-large button-outline button-balanced account-auth-btn"
+          ng-click="logout()" ng-show="user">
+        Logout
+      </button>
+
+      <li ng-if="user">
+        <ul>...favorites...</ul>
+      </li>
+    </div>
+
+    <div class="account-footer">
+      <button class="button button-small button-clear button-balanced" ng-click="closeAccount()"
+          ng-show="user">
+        Delete my account
+      </button>
+
+      <p class="legal-disclaimer">
+        Copyright 2016
+        Raquel Bujans
+      </p>
+    </div>
+
+  </div>
   </ion-content>
 </ion-view>

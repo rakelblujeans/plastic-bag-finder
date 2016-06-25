@@ -5,12 +5,15 @@ angular.module('starter.controllers').controller('MapController', function ($sco
     initialize();
   });
 
+  $scope.$on('$ionicView.leave', function () {
+    clearMarkers();
+  });
+
   function initialize() {
     $scope.PinService = PinService;
-    $scope.pins = PinService.pins;
+    $scope.pins = PinService.approvedPins;
 
     $scope.markers = [];
-    $scope.currentMarker;
     $scope.infoWindow = new google.maps.InfoWindow();
 
     var myLatlng = new google.maps.LatLng(40.768037, -73.975705);
@@ -57,12 +60,12 @@ angular.module('starter.controllers').controller('MapController', function ($sco
     output += "<div><a class='map-info-DirectionsLink' href='https://www.google.com/maps/place/" + pin.address + "'>Directions</a></div>";
     // todo: show icon if currently open
     // show icon if favorited
-
     return "<div class='map-infoContent'>" + output + "</div>";
   };
 
   function clearMarkers() {
     for (var i = 0; i < $scope.markers.length; i++) {
+      google.maps.event.clearInstanceListeners($scope.markers[i]);
       $scope.markers[i].setMap(null);
     }
     $scope.markers = [];

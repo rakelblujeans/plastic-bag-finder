@@ -1,10 +1,63 @@
-var firebaseBaseURL = 'https://plastic-bag-finder.firebaseio.com';
-
 angular.module('starter.services', [])
 .constant('googleMapsKey', 'AIzaSyAqdnKiE3Z48MosGNE015UlO4kjg23dKf4')
 
-.factory('PinService', function($firebaseArray) {
-  var pinsRef = new Firebase(firebaseBaseURL + '/pins');
+// let's create a re-usable factory that generates the $firebaseAuth instance
+.factory("Auth", ["$firebaseAuth",
+  function($firebaseAuth) {
+    return $firebaseAuth();
+  }
+])
+
+.service('UserService', function(Auth, $firebaseArray) {
+
+  var firebaseDBRef = firebase.database().ref();
+
+  var login = function() {
+    Auth.$signInWithPopup("google").then(function(firebaseUser) {
+      console.log("Signed in as:", firebaseUser.user);
+      // TODO: for now, save everyone as admin. remove this later
+      firebase.database().ref('/userRoles/' + firebaseUser.user.uid).set({
+        role: 'admin'
+      });
+    }).catch(function(error) {
+      console.log("Authentication failed:", error);
+    });
+  }
+
+  var logout = function() {
+    Auth.$signOut();
+  }
+
+  var closeAccount = function() {
+    // Delete the currently signed-in user
+    Auth.$deleteUser().then(function() {
+      console.log("User deleted successfully");
+    }).catch(function(error) {
+      console.log("Error deleting user:", error);
+    });
+  }
+
+  var isAdmin = function() {
+    var userId = firebase.auth().currentUser.uid;
+    firebase.database().ref('/userRoles/' + userId).once('value').then(function(snapshot) {
+      var role = snapshot.val().role;
+      return role === 'admin';
+    });
+  }
+
+  return {
+    login: login,
+    logout: logout,
+    closeAccount: closeAccount,
+    isAdmin: isAdmin
+  };
+})
+
+.factory('PinService', function($firebaseArray, UserService) {
+  var submittedPinsRef = firebase.database().ref().child('pins/submitted');
+  var approvedPinsRef = firebase.database().ref().child('pins/approved');
+  var submittedPins = $firebaseArray(submittedPinsRef);
+  var approvedPins = $firebaseArray(approvedPinsRef);
 
   var Status = {
     SUBMITTED: 'SUBMITTED',
@@ -12,17 +65,26 @@ angular.module('starter.services', [])
     FLAGGED: 'FLAGGED'
   }
 
-  // todo: order by proximity to me
-  // todo: pagination? limit # of results
-  var pins = $firebaseArray(pinsRef);
+  // todo: limit by proximity to me
+  // todo: pagination?
 
   var add = function(place) {
+    // console.log('inside adding', place);
+    // console.log('submittedPins', submittedPins);
     var newPin = {};
     _setData(newPin, place);
     if (newPin.address) {
-      pins.$add(newPin);
+      submittedPins.$add(newPin);
     }
   };
+
+  var remove = function(pin) {
+    if (pin.status === Status.APPROVED) {
+      approvedPins.$remove(pin);
+    } else if (pin.status === Status.SUBMITTED) {
+      submittedPins.$remove(pin);
+    }
+  }
 
   /** In practice, we should never need this. The only updates
     * someone would make is to flag this place as no longer accepting donations,
@@ -36,30 +98,23 @@ angular.module('starter.services', [])
 
   var approve = function(pin) {
     pin.status = Status.APPROVED;
-    _save(pin);
+    pin.updatedAt = Date.now();
+    approvedPins.$add(pin);
+    submittedPins.$remove(pin);
   };
 
   var unapprove = function(pin) {
     pin.status = Status.SUBMITTED;
-    _save(pin);
+    pin.updatedAt = Date.now();
+    submittedPins.$add(pin);
+    approvedPins.$remove(pin);
   };
 
   var isApproved = function(pin) {
     return pin.status === Status.APPROVED;
   };
 
-  // todo
-  var favorite = function(pin) {
-    pin.favorite = true;
-    _save(pin);
-  }
-
-  // todo
-  var unfavorite = function(pin) {
-    pin.favorite = false;
-    _save(pin);
-  }
-
+  // TODO: notify admin of flags through notifications
   var flag = function(pin) {
     pin.flagged = true;
     _save(pin);
@@ -71,7 +126,7 @@ angular.module('starter.services', [])
   }
 
   var _setData = function(pin, place) {
-    console.log(place);
+    // console.log(pin, place);
     pin.placeId = place.place_id;
     pin.lat = place.geometry.location.lat();
     pin.lng = place.geometry.location.lng();
@@ -99,6 +154,7 @@ angular.module('starter.services', [])
       pin.icon = place.icon;
     }
 
+    pin.favorites = [];
     pin.status = 'submitted';
     pin.createdAt = Date.now();
     pin.updatedAt = Date.now();
@@ -106,93 +162,49 @@ angular.module('starter.services', [])
 
   var _save = function(pin) {
     pin.updatedAt = Date.now();
-    pins.$save(pin);
+    if (pin.status === Status.APPROVED) {
+      approvedPins.$save(pin);
+    } else if (pin.status === Status.SUBMITTED) {
+      submittedPins.$save(pin);
+    }
   }
 
+  // var addToFavorites = function(pin, uid) {
+  //   if (!pin.favorites) {
+  //     pin.favorites =
+  //   }
+
+  //   var idx = pin.favorites.indexOf(uid);
+  //   if (idx == -1) {
+  //     pin.favorites.push(uid);
+  //   }
+  //   _save(pin);
+  // }
+
+  // var removeFromFavorites = function(pin, uid) {
+  //   var idx = pin.favorites.indexOf(uid);
+  //   if (idx > -1) {
+  //     pin.favorites.push(pop);
+  //   }
+  //   _save(pin);
+  // }
+
+  // var isFavorite = function(pin, uid) {
+  //   return pin && pin.favorites && pin.favorites.indexOf(uid);
+  // }
+
   return {
-    pins: pins,
+    approvedPins: approvedPins,
+    submittedPins: submittedPins,
     add: add,
-    // update: update,
+    remove: remove,
     approve: approve,
     unapprove: unapprove,
     flag: flag,
     unflag: unflag,
-    isApproved: isApproved,
-    favorite: favorite,
-    unfavorite: unfavorite,
-  };
-})
-
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
+    isApproved: isApproved
+    // addToFavorites: addToFavorites,
+    // removeFromFavorites: removeFromFavorites,
+    // isFavorite: isFavorite
   };
 });
-
-
-// .factory('Utils', function() {
-
-//   function geocodeAddress(address, callbackFn) {
-//     var geocoder = new google.maps.Geocoder();
-//     geocoder.geocode({'address': '1303 Fulton St, Brooklyn, NY 11216'}, function(results, status) {
-//       if (status == google.maps.GeocoderStatus.OK) {
-//         if (results.length) {
-//           callbackFn(results[0]);
-//         } else {
-//           // no results found
-//           callbackFn(null);
-//         }
-//       } else {
-//         // alert('Geocode was not successful for the following reason: ' + status);
-//         callbackFn(null);
-//       }
-//     });
-//   };
-
-//   return {
-//     geocodeAddress: geocodeAddress
-//   };
-// })

@@ -1,0 +1,19 @@
+<ion-view view-title="{{::user.name}}">
+  <ion-nav-buttons side="primary">
+    <button class="button button-icon ion-edit" ng-click="edit()">
+    </button>
+  </ion-nav-buttons>
+
+  <ion-content class="padding">
+
+  <h1 class="user-moderator">Moderator</h1>
+
+  <h3>t| {{::user.phone}}</h3>
+  <h3>e| {{::user.email}}</h3>
+  <p>User since {{::user.createdAt}}</p>
+
+  <h2>Favorited Locations</h2>
+
+
+  </ion-content>
+</ion-view>

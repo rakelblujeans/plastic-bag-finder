@@ -1,13 +1,13 @@
-<ion-view view-title="Pins">
+<ion-view view-title="Recycle Your Plastic Bags">
 
   <ion-nav-buttons side="primary">
-    <button class="button button-icon ion-plus" ng-click="openAddPanel()">
+    <button class="button button-icon ion-plus" ng-click="openAddPanel()" ng-if="::isAdmin">
     </button>
   </ion-nav-buttons>
 
   <ion-content class="padding has-header">
-
-    <form class="pins-pinForm" name="pinForm" novalidate ng-show="addPanelExpanded">
+    <form class="pins-pinForm" name="pinForm" novalidate ng-show="addPanelExpanded"
+        >
       <div class="list">
         <div class="item item-divider">
           Enter new drop-off location
@@ -19,15 +19,20 @@
               name="placeQuery" ng-minlength="2" required>
         </label>
 
-        <div class="button-bar">
-          <button type="submit" class="button button-balanced" ng-disabled="pinForm.$invalid"
-              ng-click="submitForm()">
-            Submit
-          </button>
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div class="button-bar">
+              <button type="submit" class="button button-balanced" ng-disabled="pinForm.$invalid"
+                  ng-click="submitForm()">
+                Submit
+              </button>
 
-          <button class="button button-energized" ng-click="closeAddPanel()">
-            Cancel
-          </button>
+              <button class="button button-energized" ng-click="closeAddPanel()">
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -39,7 +44,7 @@
             'pins--flagged': pin.flagged,
             'pins--unapproved': !isApproved(pin) && !pin.flagged
           }"
-          ng-repeat="pin in pins"
+          ng-repeat="pin in submittedPins"
           type="item-text-wrap">
         <h2>{{pin.name}}</h2>
         <p class="pins-address">
@@ -49,7 +54,7 @@
 
         <a href="#/tab/pins/{{pin.$id}}" class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
 
-        <div class="buttons">
+        <div class="buttons" ng-if="::isAdmin">
           <button class="button button-positive" ng-click="remove(pin)">
             <i class="icon ion-trash-b"></i>
           </button>
@@ -62,15 +67,43 @@
           <button class="button button-positive" ng-click="approve(pin)" ng-if="!isApproved(pin)">
             <i class="icon ion-ios-checkmark-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unapprove(pin)" ng-if="isApproved(pin)">
-            <i class="icon ion-ios-checkmark"></i>
-          </button>
-          <button class="button button-positive" ng-click="favorite(pin)" ng-if="!isFavorited(pin)">
+
+          <button ng-show="false" class="button button-positive" ng-click="favorite(pin)">
             <i class="icon ion-ios-star-outline"></i>
           </button>
-          <button class="button button-positive" ng-click="unfavorite(pin)"
-              ng-if="isFavorited(pin)">
+          <button ng-show="false" class="button button-positive" ng-click="unfavorite(pin)">
             <i class="icon ion-ios-star"></i>
+          </button>
+
+        </div>
+      </ion-item>
+      <ion-item class="item-remove-animate item-icon-right"
+          ng-class="{
+            'pins--flagged': pin.flagged,
+            'pins--unapproved': !isApproved(pin) && !pin.flagged
+          }"
+          ng-repeat="pin in approvedPins"
+          type="item-text-wrap">
+        <h2>{{pin.name}}</h2>
+        <p class="pins-address">
+          {{pin.address}}<br>
+          <small>Last updated {{formatDate(pin.updatedAt)}}</small>
+        </p>
+
+        <a href="#/tab/pins/{{pin.$id}}" class="pins-detailLink icon ion-chevron-right icon-accessory"></a>
+
+        <div class="buttons" ng-if="::isAdmin">
+          <button class="button button-positive" ng-click="remove(pin)">
+            <i class="icon ion-trash-b"></i>
+          </button>
+          <button class="button button-positive" ng-click="flag(pin)" ng-if="!pin.flagged">
+            <i class="icon ion-ios-flag-outline"></i>
+          </button>
+          <button class="button button-positive" ng-click="unflag(pin)" ng-if="pin.flagged">
+            <i class="icon ion-ios-flag"></i>
+          </button>
+          <button class="button button-positive" ng-click="unapprove(pin)" ng-if="isApproved(pin)">
+            <i class="icon ion-ios-checkmark"></i>
           </button>
 
         </div>

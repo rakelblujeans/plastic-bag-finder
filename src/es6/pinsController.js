@@ -1,9 +1,19 @@
 angular.module('starter.controllers')
-  .controller('PinsController', function($scope, PinService) {
-    $scope.newPin = {};
+  .controller('PinsController', function($scope, Auth, PinService, UserService) {
+    $scope.Auth = Auth;
     $scope.PinService = PinService;
-    $scope.pins = PinService.pins;
+
+    $scope.newPin = {};
+    $scope.submittedPins = PinService.submittedPins;
+    $scope.approvedPins = PinService.approvedPins;
     $scope.addPanelExpanded = false;
+
+    // any time auth state changes, add the user data to scope
+    $scope.Auth.$onAuthStateChanged(function(firebaseUser) {
+      if (!firebaseUser) {
+        $scope.admin = null;
+      }
+    });
 
     $scope.$on('$ionicView.enter', function() {
       // Create the autocomplete helper, and associate it with
@@ -19,15 +29,25 @@ angular.module('starter.controllers')
       var place = $scope.autocomplete.getPlace();
       if (place.geometry) {
         $scope.place = place;
+        // console.log('onPlaceChanged', $scope.place);
       }
     }
 
+    // because the submit button is right underneath the address autocomplete dropdown,
+    // it gets accidentally clicked very easily. We should not actually submit the form
+    // unless we've explicitly clicked the button and have valid data
     $scope.submitForm = function() {
-      if ($scope.place) {
-        console.log('submitting form');
+      if ($scope.place.adr_address) {
         $scope.PinService.add($scope.place);
         $scope.closeAddPanel();
       }
+    }
+
+    $scope.isAdmin = function() {
+      if (typeof $scope.admin === undefined) {
+        $scope.admin = UserService.isAdmin();
+      }
+      return $scope.admin;
     }
 
     /**
@@ -44,7 +64,7 @@ angular.module('starter.controllers')
     }
 
     $scope.remove = function(pin) {
-      $scope.pins.$remove(pin);
+      $scope.PinService.remove(pin);
     }
 
     $scope.approve = function(pin) {
@@ -59,20 +79,17 @@ angular.module('starter.controllers')
       return PinService.isApproved(pin);
     }
 
-    // todo: this must take user into account
-    $scope.favorite = function(pin) {
-      $scope.PinService.favorite(pin);
-    }
+    // $scope.favorite = function(pin) {
+    //   $scope.PinService.addToFavorites(pin, $scope.firebaseUser.uid);
+    // }
 
-    // todo
-    $scope.unfavorite = function(pin) {
-      $scope.PinService.unfavorite(pin);
-    }
+    // $scope.unfavorite = function(pin) {
+    //   $scope.PinService.removeFromFavorites(pin, $scope.firebaseUser.uid);
+    // }
 
-    // todo
-    $scope.isFavorited = function(pin) {
-      return pin.favorite;
-    }
+    // $scope.isFavorite = function(pin) {
+    //   $scope.PinService.isFavorite(pin, $scope.firebaseUser.uid);
+    // }
 
     $scope.openAddPanel = function() {
       $scope.newPin = {};
@@ -81,8 +98,6 @@ angular.module('starter.controllers')
     }
 
     $scope.closeAddPanel = function() {
-      $scope.newPin = {};
-      $scope.place = {};
       $scope.addPanelExpanded = false;
     }
 
