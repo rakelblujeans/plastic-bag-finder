@@ -1,5 +1,6 @@
 angular.module('starter.controllers')
-  .controller('AccountController', function($scope, Auth, UserService) {
+  .controller('AccountController', [
+      '$scope', 'Auth', 'UserService', function($scope, Auth, UserService) {
     $scope.Auth = Auth;
     $scope.UserService = UserService;
 
@@ -14,10 +15,11 @@ angular.module('starter.controllers')
     }
 
     $scope.logout = function() {
+      console.log('logout');
       $scope.UserService.logout();
     }
 
     $scope.closeAccount = function() {
       $scope.UserService.closeAccount();
     }
-});
+}]);

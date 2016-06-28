@@ -11,16 +11,17 @@ angular.module('starter.services', [])
 .service('UserService', function(Auth, $firebaseArray) {
 
   var firebaseDBRef = firebase.database().ref();
+  firebaseDBRef.keepSynced(true);
 
   var login = function() {
     Auth.$signInWithPopup("google").then(function(firebaseUser) {
-      // console.log("Signed in as:", firebaseUser.user);
+      console.log("Signed in as:", firebaseUser.user);
       // TODO: for now, save everyone as admin. remove this later
       firebase.database().ref('/userRoles/' + firebaseUser.user.uid).set({
         role: 'admin'
       });
     }).catch(function(error) {
-      // console.log("Authentication failed:", error);
+      console.log("Authentication failed:", error);
     });
   }
 
@@ -56,6 +57,8 @@ angular.module('starter.services', [])
 .factory('PinService', function($firebaseArray, UserService) {
   var submittedPinsRef = firebase.database().ref().child('pins/submitted');
   var approvedPinsRef = firebase.database().ref().child('pins/approved');
+  submittedPinsRef.keepSynced(true);
+  approvedPinsRef.keepSynced(true);
   var submittedPins = $firebaseArray(submittedPinsRef);
   var approvedPins = $firebaseArray(approvedPinsRef);
 

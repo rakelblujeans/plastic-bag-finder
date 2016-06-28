@@ -1,12 +1,6 @@
 'use strict';
 
 // Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controllers', 'starter.services'])
 
 // .config(function($compileProvider){
@@ -34,6 +28,8 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    Firebase.getDefaultConfig().setPersistenceEnabled(true);
   });
 }).config(function ($stateProvider, $urlRouterProvider) {
 
@@ -43,32 +39,18 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  // .state('splash', {
-  //   url: '/splash',
-  //   templateUrl: 'templates/splash.html',
-  //   controller: 'SplashController',
-  //   resolve: {
-  //     // controller will not be loaded until $waitForSignIn resolves
-  //     // Auth refers to our $firebaseAuth wrapper in the example above
-  //     "currentAuth": ["Auth", function(Auth) {
-  //       // $waitForSignIn returns a promise so the resolve waits for it to complete
-  //       return Auth.$waitForSignIn();
-  //     }]
-  //   }
-  // })
-
   // setup an abstract state for the tabs directive
   .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html',
-    resolve: {
-      // controller will not be loaded until $waitForSignIn resolves
-      "currentAuth": ["Auth", function (Auth) {
-        // $waitForSignIn returns a promise so the resolve waits for it to complete
-        return Auth.$waitForSignIn();
-      }]
-    }
+    templateUrl: 'templates/tabs.html'
+    // resolve: {
+    //   // controller will not be loaded until $waitForSignIn resolves
+    //   "currentAuth": ["Auth", function(Auth) {
+    //     // $waitForSignIn returns a promise so the resolve waits for it to complete
+    //     return Auth.$waitForSignIn();
+    //   }]
+    // }
   })
 
   // Each tab has its own nav history stack:
@@ -80,28 +62,19 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/tab-map.html',
         controller: 'MapController'
       }
-    },
-    resolve: {
-      // controller will not be loaded until $waitForSignIn resolves
-      "currentAuth": ["Auth", function (Auth) {
-        // $waitForSignIn returns a promise so the resolve waits for it to complete
-        return Auth.$waitForSignIn();
-      }]
     }
-  }).state('tab.pins', {
-    url: '/pins',
+    // resolve: {
+    //   "currentAuth": ["Auth", function(Auth) {
+    //     return Auth.$waitForSignIn();
+    //   }]
+    // }
+  }).state('tab.map-pin-detail', {
+    url: '/mapPins/:pinId',
     views: {
-      'tab-pins': {
-        templateUrl: 'templates/tab-pins.html',
-        controller: 'PinsController'
+      'tab-map': {
+        templateUrl: 'templates/pin-detail.html',
+        controller: 'PinDetailController'
       }
-    },
-    resolve: {
-      // controller will not be loaded until $waitForSignIn resolves
-      "currentAuth": ["Auth", function (Auth) {
-        // $waitForSignIn returns a promise so the resolve waits for it to complete
-        return Auth.$waitForSignIn();
-      }]
     }
   }).state('tab.account', {
     url: '/account',
@@ -110,14 +83,25 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/tab-account.html',
         controller: 'AccountController'
       }
-    },
-    resolve: {
-      // controller will not be loaded until $waitForSignIn resolves
-      "currentAuth": ["Auth", function (Auth) {
-        // $waitForSignIn returns a promise so the resolve waits for it to complete
-        return Auth.$waitForSignIn();
-      }]
     }
+    // resolve: {
+    //   "currentAuth": ["Auth", function(Auth) {
+    //     return Auth.$waitForSignIn();
+    //   }]
+    // }
+  }).state('tab.pins', {
+    url: '/pins',
+    views: {
+      'tab-pins': {
+        templateUrl: 'templates/tab-pins.html',
+        controller: 'PinsController'
+      }
+    }
+    // resolve: {
+    //   "currentAuth": ["Auth", function(Auth) {
+    //     return Auth.$waitForSignIn();
+    //   }]
+    // }
   }).state('tab.pin-detail', {
     url: '/pins/:pinId',
     views: {
@@ -125,14 +109,12 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/pin-detail.html',
         controller: 'PinDetailController'
       }
-    },
-    resolve: {
-      // controller will not be loaded until $waitForSignIn resolves
-      "currentAuth": ["Auth", function (Auth) {
-        // $waitForSignIn returns a promise so the resolve waits for it to complete
-        return Auth.$waitForSignIn();
-      }]
     }
+    // resolve: {
+    //   "currentAuth": ["Auth", function(Auth) {
+    //     return Auth.$waitForSignIn();
+    //   }]
+    // }
   });
 
   // if none of the above states are matched, use this as the fallback

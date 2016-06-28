@@ -1,27 +1,28 @@
 'use strict';
 
-angular.module('starter.controllers').controller('MapController', function ($scope, $cordovaGeolocation, Auth, PinService) {
+angular.module('starter.controllers').controller('MapController', ['$scope', '$cordovaGeolocation', '$ionicHistory', 'Auth', 'PinService', function ($scope, $cordovaGeolocation, $ionicHistory, Auth, PinService) {
 
   $scope.Auth = Auth;
   $scope.PinService = PinService;
+  $scope.markers = [];
+  $scope.infoWindow = new google.maps.InfoWindow();
+  $scope.cordovaOptions = { timeout: 10000, enableHighAccuracy: true };
 
   $scope.initialize = function () {
-    $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
-      $scope.user = firebaseUser;
-    });
-    $scope.pins = PinService.approvedPins;
+    // $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
+    //   $scope.user = firebaseUser;
+    // });
 
-    $scope.markers = [];
-    $scope.infoWindow = new google.maps.InfoWindow();
-
-    var options = { timeout: 10000, enableHighAccuracy: true };
-    $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
-      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      $scope.renderMap(latLng);
-    }, function (error) {
-      console.log("Could not get location, falling back", error);
-      var latLng = new google.maps.LatLng(40.768037, -73.975705);
-      $scope.renderMap(latLng);
+    PinService.approvedPins.$loaded().then(function (data) {
+      $scope.pins = data;
+      $cordovaGeolocation.getCurrentPosition($scope.cordovaOptions).then(function (position) {
+        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        $scope.renderMap(latLng);
+      }, function (error) {
+        console.log("Could not get location, falling back", error);
+        var latLng = new google.maps.LatLng(40.768037, -73.975705);
+        $scope.renderMap(latLng);
+      });
     });
   };
 
@@ -56,6 +57,7 @@ angular.module('starter.controllers').controller('MapController', function ($sco
 
   $scope.attachInfoWindow = function (marker, pin) {
     marker.addListener('click', function () {
+      // console.log("\n\n\n opening window");
       $scope.infoWindow.close();
       $scope.infoWindow.setContent($scope.buildContentString(pin));
       $scope.infoWindow.open(map, marker);
@@ -64,22 +66,20 @@ angular.module('starter.controllers').controller('MapController', function ($sco
 
   $scope.buildContentString = function (pin) {
     var output = '';
-    if ($scope.PinService.isFavorite(pin, $scope.user.uid)) {
+    if ($scope.user && $scope.PinService.isFavorite(pin, $scope.user.uid)) {
       output += '<i class="icon ion-ios-star energized"></i>';
     }
     if (pin.flagged) {
       output += '<i class="icon ion-ios-flag assertive pb-overlay-icon"></i>';
     }
 
-    output += "<a class='map-info-titleLink' href='#/tab/pins/" + pin.$id + "'>" + (pin.name ? pin.name : pin.short_address) + "</a>";
+    output += "<a class='map-info-titleLink' href='#/tab/mapPins/" + pin.$id + "'>" + (pin.name ? pin.name : pin.short_address) + "</a>";
 
-    // todo
+    // todo: show icon if currently open
     // if (pin.opening_hours && pin.opening_hours.open_now) {
     // }
-
     output += "<div><a class='map-info-DirectionsLink' href='https://www.google.com/maps/place/" + pin.address + "'>Directions</a></div>";
-    // todo: show icon if currently open
-    // show icon if favorited
+
     return "<div class='map-infoContent'>" + output + "</div>";
   };
 
@@ -96,17 +96,14 @@ angular.module('starter.controllers').controller('MapController', function ($sco
   };
 
   ionic.Platform.ready(function () {
-    // will execute when device is ready, or immediately if the device is already ready.
-    console.log('platform ready');
+    $scope.initialize();
   });
 
   $scope.$on('$ionicView.enter', function () {
-    console.log('view enter');
-    $scope.initialize();
-    // $scope.drawPins();
+    $ionicHistory.clearHistory();
   });
 
   $scope.$on('$ionicView.leave', function () {
-    $scope.clearMarkers();
+    // $scope.clearMarkers();
   });
-});
+}]);

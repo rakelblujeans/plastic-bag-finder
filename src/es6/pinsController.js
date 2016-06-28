@@ -1,26 +1,33 @@
 angular.module('starter.controllers')
-  .controller('PinsController', function($scope, Auth, PinService, UserService) {
+  .controller('PinsController', ['$scope', '$ionicHistory', 'Auth', 'PinService', 'UserService',
+      function($scope, $ionicHistory, Auth, PinService, UserService) {
     $scope.Auth = Auth;
     $scope.PinService = PinService;
 
     $scope.newPin = {};
-    $scope.submittedPins = PinService.submittedPins;
-    $scope.approvedPins = PinService.approvedPins;
     $scope.addPanelExpanded = false;
 
     // any time auth state changes, add the user data to scope
-    $scope.Auth.$onAuthStateChanged(function(firebaseUser) {
-      $scope.user = firebaseUser;
-      if (!firebaseUser) {
-        $scope.admin = null;
-      }
-    });
+    // $scope.Auth.$onAuthStateChanged(function(firebaseUser) {
+    //   $scope.user = firebaseUser;
+    //   if (!firebaseUser) {
+    //     $scope.admin = null;
+    //   }
+    // });
 
     $scope.$on('$ionicView.enter', function() {
+      $ionicHistory.clearHistory();
       initialize();
     });
 
     function initialize() {
+      PinService.submittedPins.$loaded().then(function(submittedData) {
+        $scope.submittedPins = submittedData;
+        PinService.approvedPins.$loaded().then(function(approvedData) {
+          $scope.approvedPins = approvedData;
+        });
+      });
+
       // Create the autocomplete helper, and associate it with
       // an HTML text input box.
       var input = (document.getElementById('placeQuery'));
@@ -86,11 +93,15 @@ angular.module('starter.controllers')
     }
 
     $scope.favorite = function(pin) {
-      $scope.PinService.addToFavorites(pin, $scope.user.uid);
+      if ($scope.user) {
+        $scope.PinService.addToFavorites(pin, $scope.user.uid);
+      }
     }
 
     $scope.unfavorite = function(pin) {
-      $scope.PinService.removeFromFavorites(pin, $scope.user.uid);
+      if ($scope.user) {
+        $scope.PinService.removeFromFavorites(pin, $scope.user.uid);
+      }
     }
 
     $scope.isFavorite = function(pin) {
@@ -120,4 +131,4 @@ angular.module('starter.controllers')
       };
       return date.toLocaleTimeString("en-us", options);
     }
-});
+}]);
