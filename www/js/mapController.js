@@ -1,54 +1,57 @@
 'use strict';
 
-angular.module('starter.controllers').controller('MapController', function ($scope, Auth, PinService) {
+angular.module('starter.controllers').controller('MapController', function ($scope, $cordovaGeolocation, Auth, PinService) {
+
   $scope.Auth = Auth;
   $scope.PinService = PinService;
 
-  $scope.$on('$ionicView.enter', function () {
-    initialize();
-  });
-
-  $scope.$on('$ionicView.leave', function () {
-    clearMarkers();
-  });
-
-  function initialize() {
+  $scope.initialize = function () {
     $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
       $scope.user = firebaseUser;
     });
-
     $scope.pins = PinService.approvedPins;
 
     $scope.markers = [];
     $scope.infoWindow = new google.maps.InfoWindow();
 
-    var myLatlng = new google.maps.LatLng(40.768037, -73.975705);
+    var options = { timeout: 10000, enableHighAccuracy: true };
+    $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      $scope.renderMap(latLng);
+    }, function (error) {
+      console.log("Could not get location, falling back", error);
+      var latLng = new google.maps.LatLng(40.768037, -73.975705);
+      $scope.renderMap(latLng);
+    });
+  };
+
+  $scope.renderMap = function (latLng) {
     var mapOptions = {
+      center: latLng,
       zoom: 13,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    $scope.drawPins();
+  };
 
-    navigator.geolocation.getCurrentPosition(function (pos) {
-      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+  $scope.drawPins = function () {
+    for (var i = 0; i < $scope.pins.length; i++) {
+      var pin = $scope.pins[i];
+      var markerOptions = {
+        position: new google.maps.LatLng(pin.lat, pin.lng),
+        map: $scope.map
+      };
 
-      for (var i = 0; i < $scope.pins.length; i++) {
-        var pin = $scope.pins[i];
-        var markerOptions = {
-          position: new google.maps.LatLng(pin.lat, pin.lng),
-          map: $scope.map
-        };
-
-        if (pin.name) {
-          markerOptions.title = pin.name;
-        }
-
-        var marker = new google.maps.Marker(markerOptions);
-        $scope.attachInfoWindow(marker, pin);
-        $scope.markers.push(marker);
+      if (pin.name) {
+        markerOptions.title = pin.name;
       }
-    });
+
+      var marker = new google.maps.Marker(markerOptions);
+      $scope.attachInfoWindow(marker, pin);
+      $scope.markers.push(marker);
+    }
   };
 
   $scope.attachInfoWindow = function (marker, pin) {
@@ -80,11 +83,30 @@ angular.module('starter.controllers').controller('MapController', function ($sco
     return "<div class='map-infoContent'>" + output + "</div>";
   };
 
-  function clearMarkers() {
+  $scope.clearMarkers = function () {
+    if (!$scope.markers) {
+      return;
+    }
+
     for (var i = 0; i < $scope.markers.length; i++) {
       google.maps.event.clearInstanceListeners($scope.markers[i]);
       $scope.markers[i].setMap(null);
     }
     $scope.markers = [];
-  }
+  };
+
+  ionic.Platform.ready(function () {
+    // will execute when device is ready, or immediately if the device is already ready.
+    console.log('platform ready');
+  });
+
+  $scope.$on('$ionicView.enter', function () {
+    console.log('view enter');
+    $scope.initialize();
+    // $scope.drawPins();
+  });
+
+  $scope.$on('$ionicView.leave', function () {
+    $scope.clearMarkers();
+  });
 });

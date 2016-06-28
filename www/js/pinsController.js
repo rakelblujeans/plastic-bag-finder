@@ -20,6 +20,10 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
   });
 
   $scope.$on('$ionicView.enter', function () {
+    initialize();
+  });
+
+  function initialize() {
     // Create the autocomplete helper, and associate it with
     // an HTML text input box.
     var input = document.getElementById('placeQuery');
@@ -27,7 +31,7 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
     // Get the full place details when the user selects a place from the
     // list of suggestions.
     google.maps.event.addListener($scope.autocomplete, 'place_changed', $scope.onPlaceChanged);
-  });
+  };
 
   $scope.onPlaceChanged = function () {
     var place = $scope.autocomplete.getPlace();
@@ -93,7 +97,9 @@ angular.module('starter.controllers').controller('PinsController', function ($sc
   };
 
   $scope.isFavorite = function (pin) {
-    return $scope.PinService.isFavorite(pin, $scope.user.uid);
+    if ($scope.user) {
+      return $scope.PinService.isFavorite(pin, $scope.user.uid);
+    }
   };
 
   $scope.openAddPanel = function () {

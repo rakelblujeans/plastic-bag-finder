@@ -7,7 +7,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'firebase'])
+angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controllers', 'starter.services'])
 
 // .config(function($compileProvider){
 //   $compileProvider.aHrefSanitizationWhitelist(/^\s*(geo):/);
@@ -19,7 +19,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     // We can catch the error thrown when the $requireSignIn promise is rejected
     // and redirect the user back to the home page
     if (error === "AUTH_REQUIRED") {
-      $state.go("account");
+      $state.go("/tab/account");
     }
   });
 
@@ -136,5 +136,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/map');
+  $urlRouterProvider.otherwise('/tab/map');
 });
