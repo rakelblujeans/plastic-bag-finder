@@ -19,7 +19,7 @@ angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolo
 
       map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-      //Wait until the map is loaded
+      // Wait until the map is loaded
       google.maps.event.addListenerOnce(map, 'idle', function () {
         // loadMarkers();
         enableMap();
@@ -40,23 +40,22 @@ angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolo
   }
 
   function loadGoogleMaps() {
-
     $ionicLoading.show({
       template: 'Loading Google Maps'
     });
 
-    //This function will be called once the SDK has been loaded
+    // This function will be called once the SDK has been loaded
     window.mapInit = function () {
       console.log('google cb');
       initMap();
     };
 
-    //Create a script element to insert into the page
+    // Create a script element to insert into the page
     var script = document.createElement("script");
     script.type = "text/javascript";
     script.id = "googleMaps";
 
-    //Note the callback function in the URL is the one we created above
+    // Note the callback function in the URL is the one we created above
     if (apiKey) {
       script.src = 'http://maps.google.com/maps/api/js?key=' + apiKey + '&callback=mapInit';
     } else {
@@ -107,7 +106,7 @@ angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolo
   function addConnectivityListeners() {
     if (ionic.Platform.isWebView()) {
       // Check if the map is already loaded when the user comes online,
-      //if not, load it
+      // if not, load it
       $rootScope.$on('$cordovaNetwork:online', function (event, networkState) {
         checkLoaded();
       });
