@@ -2,8 +2,9 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'Auth', 'PinService', 'UserService', function ($scope, $ionicHistory, Auth, PinService, UserService) {
+angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'Auth', 'GoogleMapsLoader', 'PinService', 'UserService', function ($scope, $ionicHistory, Auth, GoogleMapsLoader, PinService, UserService) {
   $scope.Auth = Auth;
+  $scope.GoogleMapsLoader = GoogleMapsLoader;
   $scope.PinService = PinService;
 
   $scope.newPin = {};
@@ -19,25 +20,27 @@ angular.module('starter.controllers').controller('PinsController', ['$scope', '$
 
   $scope.$on('$ionicView.enter', function () {
     $ionicHistory.clearHistory();
-    // initialize();
+    $scope.GoogleMapsLoader.init($scope.initialize);
   });
 
-  // function initialize() {
-  //   PinService.submittedPins.$loaded().then(function(submittedData) {
-  //     $scope.submittedPins = submittedData;
-  //     PinService.approvedPins.$loaded().then(function(approvedData) {
-  //       $scope.approvedPins = approvedData;
-  //     });
-  //   });
+  $scope.initialize = function () {
+    $scope.GoogleMapsLoader.enableInteraction();
 
-  //   // Create the autocomplete helper, and associate it with
-  //   // an HTML text input box.
-  //   var input = (document.getElementById('placeQuery'));
-  //   $scope.autocomplete = new google.maps.places.Autocomplete(input);
-  //   // Get the full place details when the user selects a place from the
-  //   // list of suggestions.
-  //   google.maps.event.addListener($scope.autocomplete, 'place_changed', $scope.onPlaceChanged);
-  // };
+    PinService.submittedPins.$loaded().then(function (submittedData) {
+      $scope.submittedPins = submittedData;
+      PinService.approvedPins.$loaded().then(function (approvedData) {
+        $scope.approvedPins = approvedData;
+      });
+    });
+
+    // Create the autocomplete helper, and associate it with
+    // an HTML text input box.
+    var input = document.getElementById('placeQuery');
+    $scope.autocomplete = new window.google.maps.places.Autocomplete(input);
+    // Get the full place details when the user selects a place from the
+    // list of suggestions.
+    google.maps.event.addListener($scope.autocomplete, 'place_changed', $scope.onPlaceChanged);
+  };
 
   $scope.onPlaceChanged = function () {
     var place = $scope.autocomplete.getPlace();
