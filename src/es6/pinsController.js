@@ -17,25 +17,25 @@ angular.module('starter.controllers')
 
     $scope.$on('$ionicView.enter', function() {
       $ionicHistory.clearHistory();
-      initialize();
+      // initialize();
     });
 
-    function initialize() {
-      PinService.submittedPins.$loaded().then(function(submittedData) {
-        $scope.submittedPins = submittedData;
-        PinService.approvedPins.$loaded().then(function(approvedData) {
-          $scope.approvedPins = approvedData;
-        });
-      });
+    // function initialize() {
+    //   PinService.submittedPins.$loaded().then(function(submittedData) {
+    //     $scope.submittedPins = submittedData;
+    //     PinService.approvedPins.$loaded().then(function(approvedData) {
+    //       $scope.approvedPins = approvedData;
+    //     });
+    //   });
 
-      // Create the autocomplete helper, and associate it with
-      // an HTML text input box.
-      var input = (document.getElementById('placeQuery'));
-      $scope.autocomplete = new google.maps.places.Autocomplete(input);
-      // Get the full place details when the user selects a place from the
-      // list of suggestions.
-      google.maps.event.addListener($scope.autocomplete, 'place_changed', $scope.onPlaceChanged);
-    };
+    //   // Create the autocomplete helper, and associate it with
+    //   // an HTML text input box.
+    //   var input = (document.getElementById('placeQuery'));
+    //   $scope.autocomplete = new google.maps.places.Autocomplete(input);
+    //   // Get the full place details when the user selects a place from the
+    //   // list of suggestions.
+    //   google.maps.event.addListener($scope.autocomplete, 'place_changed', $scope.onPlaceChanged);
+    // };
 
     $scope.onPlaceChanged = function () {
       var place = $scope.autocomplete.getPlace();
