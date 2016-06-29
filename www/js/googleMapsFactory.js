@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolocation, $ionicLoading, $rootScope, $cordovaNetwork, ConnectivityMonitor, GoogleMapsLoader, PinService) {
-
+angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation', 'ConnectivityMonitor', 'GoogleMapsLoader', 'PinService', function ($cordovaGeolocation, ConnectivityMonitor, GoogleMapsLoader, PinService) {
   var apiKey = false;
   var map = null;
   var markers = [];
@@ -18,7 +17,7 @@ angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolo
     // Wait until the map is loaded
     google.maps.event.addListenerOnce(map, 'idle', function () {
       loadMarkers();
-      GoogleMapsLoader.enableInteraction();
+      ConnectivityMonitor.enableInteraction();
     });
   };
 
@@ -102,4 +101,4 @@ angular.module('starter.services').factory('GoogleMaps', function ($cordovaGeolo
       loadMarkers();
     }
   };
-});
+}]);

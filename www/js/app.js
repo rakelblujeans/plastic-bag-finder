@@ -8,7 +8,7 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
 // })
 .config(function ($ionicConfigProvider) {
   $ionicConfigProvider.navBar.alignTitle('center');
-}).run(function ($ionicPlatform, $rootScope, $state) {
+}).run(function ($ionicPlatform, $rootScope, $state, ConnectivityMonitor) {
   $rootScope.$on("$stateChangeError", function (event, toState, toParams, fromState, fromParams, error) {
     // We can catch the error thrown when the $requireSignIn promise is rejected
     // and redirect the user back to the home page
@@ -28,6 +28,8 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    ConnectivityMonitor.startWatching();
   });
 }).config(function ($stateProvider, $urlRouterProvider) {
 

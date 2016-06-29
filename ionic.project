@@ -1,6 +1,6 @@
 {
   "name": "plastic-bag-finder",
-  "app_id": "",
+  "app_id": "e0e05f46",
   "gulpStartupTasks": [
     "babel",
     "sass",

@@ -1,19 +1,9 @@
 'use strict';
 
-angular.module('starter.services').factory('GoogleMapsLoader', function ($ionicLoading, $rootScope, $cordovaNetwork, ConnectivityMonitor, googleMapsKey) {
+angular.module('starter.services').factory('GoogleMapsLoader', ['$ionicLoading', 'ConnectivityMonitor', 'googleMapsKey', function ($ionicLoading, ConnectivityMonitor, googleMapsKey) {
 
   var apiKey = false;
   var postLoadCallback = null;
-
-  function enableInteraction() {
-    $ionicLoading.hide();
-  }
-
-  function disableInteraction() {
-    $ionicLoading.show({
-      template: 'Uhhm, internet?'
-    });
-  }
 
   function loadGoogleMaps() {
     $ionicLoading.show({
@@ -47,44 +37,18 @@ angular.module('starter.services').factory('GoogleMapsLoader', function ($ionicL
     if (typeof google == "undefined" || typeof google.maps == "undefined") {
       loadGoogleMaps();
     } else {
-      enableInteraction();
-    }
-  }
-
-  function addConnectivityListeners() {
-    if (ionic.Platform.isWebView()) {
-      // Check if the map is already loaded when the user comes online,
-      // if not, load it
-      $rootScope.$on('$cordovaNetwork:online', function (event, networkState) {
-        checkLoaded();
-      });
-
-      // Disable the map when the user goes offline
-      $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
-        disableInteraction();
-      });
-    } else {
-      //Same as above but for when we are not running on a device
-      window.addEventListener("online", function (e) {
-        checkLoaded();
-      }, false);
-
-      window.addEventListener("offline", function (e) {
-        disableInteraction();
-      }, false);
+      ConnectivityMonitor.enableInteraction();
     }
   }
 
   return {
-    enableInteraction: enableInteraction,
-    disableInteraction: disableInteraction,
     init: function init(postLoadCb) {
       apiKey = googleMapsKey;
       postLoadCallback = postLoadCb;
 
       if (typeof window.google == "undefined" || typeof google == "undefined" || typeof google.maps == "undefined") {
         // console.warn("Google Maps SDK needs to be loaded", window.google);
-        disableInteraction();
+        ConnectivityMonitor.disableInteraction();
         if (ConnectivityMonitor.isOnline()) {
           loadGoogleMaps();
         }
@@ -93,13 +57,11 @@ angular.module('starter.services').factory('GoogleMapsLoader', function ($ionicL
           if (postLoadCallback) {
             postLoadCallback();
           }
-          enableInteraction();
+          ConnectivityMonitor.enableInteraction();
         } else {
-          disableInteraction();
+          ConnectivityMonitor.disableInteraction();
         }
       }
-
-      addConnectivityListeners();
     }
   };
-});
+}]);

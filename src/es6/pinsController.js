@@ -1,6 +1,6 @@
 angular.module('starter.controllers')
   .controller('PinsController', ['$scope', '$ionicHistory', 'Auth', 'GoogleMapsLoader', 'PinService', 'UserService',
-      function($scope, $ionicHistory, Auth, GoogleMapsLoader, PinService, UserService) {
+      function($scope, $ionicHistory, Auth, PinService, UserService) {
     $scope.Auth = Auth;
     $scope.GoogleMapsLoader = GoogleMapsLoader;
     $scope.PinService = PinService;

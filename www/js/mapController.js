@@ -5,7 +5,8 @@ angular.module('starter.controllers').controller('MapController', ['$scope', '$i
   // $scope.Auth = Auth;
   $scope.GoogleMaps = GoogleMaps;
 
-  ionic.Platform.ready(function () {});
+  // ionic.Platform.ready(function () {
+  // });
 
   $scope.$on('$ionicView.enter', function () {
     $ionicHistory.clearHistory();
