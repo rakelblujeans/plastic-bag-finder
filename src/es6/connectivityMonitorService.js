@@ -7,53 +7,63 @@ angular.module('starter.services')
   .factory('ConnectivityMonitor', ['$rootScope', '$cordovaNetwork', '$ionicLoading',
     function($rootScope, $cordovaNetwork, $ionicLoading) {
 
-return {
-    enableInteraction: function() {
-      $ionicLoading.hide();
-    },
-    disableInteraction: function() {
-      $ionicLoading.show({
-        template: 'Uhhm, internet?'
-      });
-    },
-    isOnline: function() {
-      // console.log('online: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
-      if(ionic.Platform.isWebView()) {
-        return $cordovaNetwork.isOnline();
-      } else {
-        return navigator.onLine;
-      }
-    },
-    isOffline: function() {
-      // console.log('offline: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
-      if(ionic.Platform.isWebView()) {
+      function enableInteraction() {
+        $ionicLoading.hide();
+      };
 
-        return !$cordovaNetwork.isOnline();
-      } else {
-        return !navigator.onLine;
-      }
-    },
-    startWatching: function() {
-      // console.log('watching: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
-        if(ionic.Platform.isWebView()) {
-          $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
-            // console.log("went online");
-          });
+      function disableInteraction(msg) {
+        $ionicLoading.show({
+          template: msg ? msg : 'Uhhm, internet?'
+        });
+      };
 
-          $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
-            // console.log("went offline");
-          });
+      return {
+        enableInteraction: enableInteraction,
+        disableInteraction: disableInteraction,
+        isOnline: function() {
+          console.log('online: is webview', ionic.Platform.device());
+          if(ionic.Platform.isWebView()) {
+            console.log("is online", $cordovaNetwork.isOnline());
+            return $cordovaNetwork.isOnline();
+          } else {
+            console.log("is online", navigator.onLine);
+            return navigator.onLine;
+          }
+        },
+        isOffline: function() {
+          console.log('offline: is webview', ionic.Platform.device());
+          if(ionic.Platform.isWebView()) {
 
+            return !$cordovaNetwork.isOnline();
+          } else {
+            return !navigator.onLine;
+          }
+        },
+        startWatching: function() {
+          console.log('watching: is webview', ionic.Platform.device());
+            if(ionic.Platform.isWebView()) {
+              $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+                console.log("went online");
+                enableInteraction();
+              });
+
+              $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+                disableInteraction();
+                console.log("went offline");
+              });
+
+            }
+            else {
+              window.addEventListener("online", function(e) {
+                enableInteraction();
+                console.log("went online");
+              }, false);
+
+              window.addEventListener("offline", function(e) {
+                disableInteraction();
+                console.log("went offline");
+              }, false);
+            }
         }
-        else {
-          window.addEventListener("online", function(e) {
-            // console.log("went online");
-          }, false);
-
-          window.addEventListener("offline", function(e) {
-            // console.log("went offline");
-          }, false);
-        }
-    }
-  }
-  }]);
+      }
+      }]);

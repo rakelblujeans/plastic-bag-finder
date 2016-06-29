@@ -7,25 +7,31 @@
 
 angular.module('starter.services').factory('ConnectivityMonitor', ['$rootScope', '$cordovaNetwork', '$ionicLoading', function ($rootScope, $cordovaNetwork, $ionicLoading) {
 
+  function enableInteraction() {
+    $ionicLoading.hide();
+  };
+
+  function disableInteraction(msg) {
+    $ionicLoading.show({
+      template: msg ? msg : 'Uhhm, internet?'
+    });
+  };
+
   return {
-    enableInteraction: function enableInteraction() {
-      $ionicLoading.hide();
-    },
-    disableInteraction: function disableInteraction() {
-      $ionicLoading.show({
-        template: 'Uhhm, internet?'
-      });
-    },
+    enableInteraction: enableInteraction,
+    disableInteraction: disableInteraction,
     isOnline: function isOnline() {
-      // console.log('online: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
+      console.log('online: is webview', ionic.Platform.device());
       if (ionic.Platform.isWebView()) {
+        console.log("is online", $cordovaNetwork.isOnline());
         return $cordovaNetwork.isOnline();
       } else {
+        console.log("is online", navigator.onLine);
         return navigator.onLine;
       }
     },
     isOffline: function isOffline() {
-      // console.log('offline: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
+      console.log('offline: is webview', ionic.Platform.device());
       if (ionic.Platform.isWebView()) {
 
         return !$cordovaNetwork.isOnline();
@@ -34,24 +40,28 @@ angular.module('starter.services').factory('ConnectivityMonitor', ['$rootScope',
       }
     },
     startWatching: function startWatching() {
-      // console.log('watching: is webview', ionic.Platform.isWebView(), ionic.Platform.device());
+      console.log('watching: is webview', ionic.Platform.device());
       if (ionic.Platform.isWebView()) {
         $rootScope.$on('$cordovaNetwork:online', function (event, networkState) {
-          // console.log("went online");
+          console.log("went online");
+          enableInteraction();
         });
 
         $rootScope.$on('$cordovaNetwork:offline', function (event, networkState) {
-          // console.log("went offline");
+          disableInteraction();
+          console.log("went offline");
         });
       } else {
-          window.addEventListener("online", function (e) {
-            // console.log("went online");
-          }, false);
+        window.addEventListener("online", function (e) {
+          enableInteraction();
+          console.log("went online");
+        }, false);
 
-          window.addEventListener("offline", function (e) {
-            // console.log("went offline");
-          }, false);
-        }
+        window.addEventListener("offline", function (e) {
+          disableInteraction();
+          console.log("went offline");
+        }, false);
+      }
     }
   };
 }]);

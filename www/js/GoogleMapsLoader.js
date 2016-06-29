@@ -6,15 +6,16 @@ angular.module('starter.services').factory('GoogleMapsLoader', ['$ionicLoading',
   var postLoadCallback = null;
 
   function loadGoogleMaps() {
-    $ionicLoading.show({
-      template: 'Loading...'
-    });
+    ConnectivityMonitor.disableInteraction('Loading...');
 
     // This function will be called once the SDK has been loaded
     window.googleMapsCb = function () {
       window.google = google;
       if (postLoadCallback) {
         postLoadCallback();
+        ConnectivityMonitor.enableInteraction();
+      } else {
+        ConnectivityMonitor.enableInteraction();
       }
     };
 
@@ -48,7 +49,7 @@ angular.module('starter.services').factory('GoogleMapsLoader', ['$ionicLoading',
 
       if (typeof window.google == "undefined" || typeof google == "undefined" || typeof google.maps == "undefined") {
         // console.warn("Google Maps SDK needs to be loaded", window.google);
-        ConnectivityMonitor.disableInteraction();
+        // console.log("HIII", ConnectivityMonitor.isOnline());
         if (ConnectivityMonitor.isOnline()) {
           loadGoogleMaps();
         }

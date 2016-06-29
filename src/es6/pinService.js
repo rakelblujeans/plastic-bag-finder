@@ -3,8 +3,6 @@ angular.module('starter.services')
 
     var submittedPinsRef = firebase.database().ref().child('pins/submitted');
     var approvedPinsRef = firebase.database().ref().child('pins/approved');
-    // submittedPinsRef.keepSynced(true);
-    // approvedPinsRef.keepSynced(true);
     var submittedPins = $firebaseArray(submittedPinsRef);
     var approvedPins = $firebaseArray(approvedPinsRef);
 

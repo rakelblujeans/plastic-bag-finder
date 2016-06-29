@@ -2,8 +2,8 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'Auth', 'GoogleMapsLoader', 'PinService', 'UserService', function ($scope, $ionicHistory, Auth, PinService, UserService) {
-  $scope.Auth = Auth;
+angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'GoogleMapsLoader', 'PinService', 'UserService', function ($scope, $ionicHistory, GoogleMapsLoader, PinService, UserService) {
+  // $scope.Auth = Auth;
   $scope.GoogleMapsLoader = GoogleMapsLoader;
   $scope.PinService = PinService;
 
@@ -24,8 +24,6 @@ angular.module('starter.controllers').controller('PinsController', ['$scope', '$
   });
 
   $scope.initialize = function () {
-    $scope.GoogleMapsLoader.enableInteraction();
-
     PinService.submittedPins.$loaded().then(function (submittedData) {
       $scope.submittedPins = submittedData;
       PinService.approvedPins.$loaded().then(function (approvedData) {

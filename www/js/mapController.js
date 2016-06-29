@@ -5,11 +5,12 @@ angular.module('starter.controllers').controller('MapController', ['$scope', '$i
   // $scope.Auth = Auth;
   $scope.GoogleMaps = GoogleMaps;
 
-  // ionic.Platform.ready(function () {
-  // });
+  // must happen here - want this to load as early as possible
+  ionic.Platform.ready(function () {
+    $scope.GoogleMaps.loadMap();
+  });
 
   $scope.$on('$ionicView.enter', function () {
     $ionicHistory.clearHistory();
-    $scope.GoogleMaps.loadMap();
   });
 }]);
