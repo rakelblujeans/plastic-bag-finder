@@ -28,8 +28,6 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    Firebase.getDefaultConfig().setPersistenceEnabled(true);
   });
 }).config(function ($stateProvider, $urlRouterProvider) {
 

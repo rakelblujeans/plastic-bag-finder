@@ -33,8 +33,6 @@ angular.module('starter', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    Firebase.getDefaultConfig().setPersistenceEnabled(true);
   });
 })
 

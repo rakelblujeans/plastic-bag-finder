@@ -8,7 +8,7 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
 }]).service('UserService', function (Auth, $firebaseArray) {
 
   var firebaseDBRef = firebase.database().ref();
-  firebaseDBRef.keepSynced(true);
+  // firebaseDBRef.keepSynced(true);
 
   var login = function login() {
     Auth.$signInWithPopup("google").then(function (firebaseUser) {
@@ -52,8 +52,8 @@ angular.module('starter.services', []).constant('googleMapsKey', 'AIzaSyAqdnKiE3
 }).factory('PinService', function ($firebaseArray, UserService) {
   var submittedPinsRef = firebase.database().ref().child('pins/submitted');
   var approvedPinsRef = firebase.database().ref().child('pins/approved');
-  submittedPinsRef.keepSynced(true);
-  approvedPinsRef.keepSynced(true);
+  // submittedPinsRef.keepSynced(true);
+  // approvedPinsRef.keepSynced(true);
   var submittedPins = $firebaseArray(submittedPinsRef);
   var approvedPins = $firebaseArray(approvedPinsRef);
 
