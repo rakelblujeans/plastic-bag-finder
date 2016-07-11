@@ -1,9 +1,10 @@
 'use strict';
 
-angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation', 'ConnectivityMonitor', 'GoogleMapsLoader', 'PinService', function ($cordovaGeolocation, ConnectivityMonitor, GoogleMapsLoader, PinService) {
+angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation', 'GoogleMapsLoader', 'PinService', function ($cordovaGeolocation, GoogleMapsLoader, PinService) {
   var apiKey = false;
   var map = null;
   var markers = [];
+  var infoWindow = null;
 
   function setMapWithLocation(latLng) {
     var mapOptions = {
@@ -17,9 +18,19 @@ angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation',
     // Wait until the map is loaded
     google.maps.event.addListenerOnce(map, 'idle', function () {
       loadMarkers();
-      ConnectivityMonitor.enableInteraction();
+      // ConnectivityMonitor.enableInteraction();
+    });
+
+    google.maps.event.addListener(map, 'click', function () {
+      closeInfoWindow();
     });
   };
+
+  function closeInfoWindow() {
+    if (infoWindow) {
+      infoWindow.close();
+    }
+  }
 
   function initMap() {
     var options = { timeout: 10000, enableHighAccuracy: true };
@@ -64,6 +75,7 @@ angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation',
     });
   }
 
+  // todo: define html in code
   function buildContentString(pin) {
     var output = '';
     // if ($scope.user && $scope.PinService.isFavorite(pin, $scope.user.uid)) {
@@ -83,11 +95,12 @@ angular.module('starter.services').factory('GoogleMaps', ['$cordovaGeolocation',
   }
 
   function addInfoWindow(marker, message, record) {
-    var infoWindow = new google.maps.InfoWindow({
+    infoWindow = new google.maps.InfoWindow({
       content: message
     });
 
     google.maps.event.addListener(marker, 'click', function () {
+      closeInfoWindow();
       infoWindow.open(map, marker);
     });
   }

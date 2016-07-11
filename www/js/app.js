@@ -43,14 +43,14 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
   .state('tab', {
     url: '/tab',
     abstract: true,
-    templateUrl: 'templates/tabs.html'
-    // resolve: {
-    //   // controller will not be loaded until $waitForSignIn resolves
-    //   "currentAuth": ["Auth", function(Auth) {
-    //     // $waitForSignIn returns a promise so the resolve waits for it to complete
-    //     return Auth.$waitForSignIn();
-    //   }]
-    // }
+    templateUrl: 'templates/tabs.html',
+    resolve: {
+      // controller will not be loaded until $waitForSignIn resolves
+      "currentAuth": ["Auth", function (Auth) {
+        // $waitForSignIn returns a promise so the resolve waits for it to complete
+        return Auth.$waitForSignIn();
+      }]
+    }
   })
 
   // Each tab has its own nav history stack:
@@ -62,12 +62,12 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/tab-map.html',
         controller: 'MapController'
       }
+    },
+    resolve: {
+      "currentAuth": ["Auth", function (Auth) {
+        return Auth.$waitForSignIn();
+      }]
     }
-    // resolve: {
-    //   "currentAuth": ["Auth", function(Auth) {
-    //     return Auth.$waitForSignIn();
-    //   }]
-    // }
   }).state('tab.map-pin-detail', {
     url: '/mapPins/:pinId',
     views: {
@@ -83,12 +83,12 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/tab-account.html',
         controller: 'AccountController'
       }
+    },
+    resolve: {
+      "currentAuth": ["Auth", function (Auth) {
+        return Auth.$waitForSignIn();
+      }]
     }
-    // resolve: {
-    //   "currentAuth": ["Auth", function(Auth) {
-    //     return Auth.$waitForSignIn();
-    //   }]
-    // }
   }).state('tab.pins', {
     url: '/pins',
     views: {
@@ -96,12 +96,12 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/tab-pins.html',
         controller: 'PinsController'
       }
+    },
+    resolve: {
+      "currentAuth": ["Auth", function (Auth) {
+        return Auth.$waitForSignIn();
+      }]
     }
-    // resolve: {
-    //   "currentAuth": ["Auth", function(Auth) {
-    //     return Auth.$waitForSignIn();
-    //   }]
-    // }
   }).state('tab.pin-detail', {
     url: '/pins/:pinId',
     views: {
@@ -109,12 +109,12 @@ angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controller
         templateUrl: 'templates/pin-detail.html',
         controller: 'PinDetailController'
       }
+    },
+    resolve: {
+      "currentAuth": ["Auth", function (Auth) {
+        return Auth.$waitForSignIn();
+      }]
     }
-    // resolve: {
-    //   "currentAuth": ["Auth", function(Auth) {
-    //     return Auth.$waitForSignIn();
-    //   }]
-    // }
   });
 
   // if none of the above states are matched, use this as the fallback

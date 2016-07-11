@@ -2,25 +2,29 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'GoogleMapsLoader', 'PinService', 'UserService', function ($scope, $ionicHistory, GoogleMapsLoader, PinService, UserService) {
-  // $scope.Auth = Auth;
+angular.module('starter.controllers').controller('PinsController', ['$scope', '$ionicHistory', 'GoogleMapsLoader', 'Auth', 'PinService', 'UserService', function ($scope, $ionicHistory, GoogleMapsLoader, Auth, PinService, UserService) {
+  $scope.Auth = Auth;
   $scope.GoogleMapsLoader = GoogleMapsLoader;
   $scope.PinService = PinService;
 
   $scope.newPin = {};
   $scope.addPanelExpanded = false;
 
-  // any time auth state changes, add the user data to scope
-  // $scope.Auth.$onAuthStateChanged(function(firebaseUser) {
-  //   $scope.user = firebaseUser;
-  //   if (!firebaseUser) {
-  //     $scope.admin = null;
-  //   }
-  // });
-
   $scope.$on('$ionicView.enter', function () {
+    // any time auth state changes, add the user data to scope
+    $scope.offAuthListener = $scope.Auth.$onAuthStateChanged(function (firebaseUser) {
+      $scope.user = firebaseUser;
+      if (!firebaseUser) {
+        $scope.admin = null;
+      }
+    });
+
     $ionicHistory.clearHistory();
     $scope.GoogleMapsLoader.init($scope.initialize);
+  });
+
+  $scope.$on('$ionicView.leave', function () {
+    $scope.offAuthListener();
   });
 
   $scope.initialize = function () {

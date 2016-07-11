@@ -3,10 +3,9 @@
 angular.module('starter.services').service('UserService', ['Auth', '$firebaseArray', function (Auth, $firebaseArray) {
 
   var firebaseDBRef = firebase.database().ref();
-  // firebaseDBRef.keepSynced(true);
 
   var login = function login() {
-    Auth.$signInWithPopup("google").then(function (firebaseUser) {
+    Auth.$signInWithRedirect("google").then(function (firebaseUser) {
       console.log("Signed in as:", firebaseUser.user);
       // TODO: for now, save everyone as admin. remove this later
       firebase.database().ref('/userRoles/' + firebaseUser.user.uid).set({

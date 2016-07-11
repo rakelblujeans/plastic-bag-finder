@@ -46,10 +46,10 @@ angular.module('starter.services').factory('GoogleMapsLoader', ['$ionicLoading',
     init: function init(postLoadCb) {
       apiKey = googleMapsKey;
       postLoadCallback = postLoadCb;
+      ConnectivityMonitor.disableInteraction();
 
       if (typeof window.google == "undefined" || typeof google == "undefined" || typeof google.maps == "undefined") {
         // console.warn("Google Maps SDK needs to be loaded", window.google);
-        // console.log("HIII", ConnectivityMonitor.isOnline());
         if (ConnectivityMonitor.isOnline()) {
           loadGoogleMaps();
         }

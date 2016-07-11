@@ -3,10 +3,17 @@ angular.module('starter.services')
       function(Auth, $firebaseArray) {
 
     var firebaseDBRef = firebase.database().ref();
-    // firebaseDBRef.keepSynced(true);
+
+    /*
+     * NOTE: Redirect/popup auth for Ionic platforms is broken with Firebase 3. Until
+     * this is fixed, I need to either switch to handling auth manually or possibly revert
+     * to Firebase 2 for auth.
+     *
+     * See for more details: https://github.com/angular/angularfire2/issues/243
+     */
 
     var login = function() {
-      Auth.$signInWithPopup("google").then(function(firebaseUser) {
+      Auth.$signInWithRedirect("google").then(function(firebaseUser) {
         console.log("Signed in as:", firebaseUser.user);
         // TODO: for now, save everyone as admin. remove this later
         firebase.database().ref('/userRoles/' + firebaseUser.user.uid).set({

@@ -1,10 +1,11 @@
 angular.module('starter.services')
   .factory('GoogleMaps', [
-    '$cordovaGeolocation', 'ConnectivityMonitor', 'GoogleMapsLoader', 'PinService',
-    function($cordovaGeolocation, ConnectivityMonitor, GoogleMapsLoader, PinService) {
+    '$cordovaGeolocation', 'GoogleMapsLoader', 'PinService',
+    function($cordovaGeolocation, GoogleMapsLoader, PinService) {
       var apiKey = false;
       var map = null;
       var markers = [];
+      var infoWindow = null;
 
       function setMapWithLocation(latLng) {
         var mapOptions = {
@@ -18,9 +19,19 @@ angular.module('starter.services')
         // Wait until the map is loaded
         google.maps.event.addListenerOnce(map, 'idle', function() {
           loadMarkers();
-          ConnectivityMonitor.enableInteraction();
+          // ConnectivityMonitor.enableInteraction();
+        });
+
+        google.maps.event.addListener(map, 'click', function() {
+          closeInfoWindow();
         });
       };
+
+      function closeInfoWindow() {
+        if (infoWindow) {
+          infoWindow.close();
+        }
+      }
 
       function initMap() {
         var options = {timeout: 10000, enableHighAccuracy: true};
@@ -66,6 +77,7 @@ angular.module('starter.services')
         });
       }
 
+      // todo: define html in code
       function buildContentString(pin) {
         var output = '';
         // if ($scope.user && $scope.PinService.isFavorite(pin, $scope.user.uid)) {
@@ -80,18 +92,19 @@ angular.module('starter.services')
 
         // todo: show icon if currently open
         // if (pin.opening_hours && pin.opening_hours.open_now) { }
-        output += "<div><a class='map-info-DirectionsLink' href='https://www.google.com/maps/place/" +
-            pin.address + "'>Directions</a></div>";
+        output += "<div><a class='map-info-DirectionsLink' href='https://www.google.com/maps/place/"
+            + pin.address + "'>Directions</a></div>";
 
         return "<div class='map-infoContent'>" + output + "</div>";
       }
 
       function addInfoWindow(marker, message, record) {
-        var infoWindow = new google.maps.InfoWindow({
+        infoWindow = new google.maps.InfoWindow({
           content: message
         });
 
         google.maps.event.addListener(marker, 'click', function() {
+          closeInfoWindow();
           infoWindow.open(map, marker);
         });
       }

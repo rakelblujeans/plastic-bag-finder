@@ -4,8 +4,6 @@ angular.module('starter.controllers')
       function($scope, $stateParams, $sce, googleMapsKey, PinService) {
 
     $scope.$on('$ionicView.enter', function() {
-      // console.log($stateParams.pinId);
-
       PinService.approvedPins.$loaded().then(function(pinArray) {
         $scope.pin = pinArray.$getRecord($stateParams.pinId);
         if ($scope.pin) {
