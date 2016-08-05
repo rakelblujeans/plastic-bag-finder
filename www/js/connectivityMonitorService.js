@@ -12,9 +12,9 @@ angular.module('starter.services').factory('ConnectivityMonitor', ['$rootScope',
   };
 
   function disableInteraction(msg) {
-    $ionicLoading.show({
+    /*$ionicLoading.show({
       template: msg ? msg : 'Uhhm, internet?'
-    });
+    });*/
   };
 
   return {
@@ -51,16 +51,16 @@ angular.module('starter.services').factory('ConnectivityMonitor', ['$rootScope',
           // console.log("went offline");
         });
       } else {
-          window.addEventListener("online", function (e) {
-            enableInteraction();
-            // console.log("went online");
-          }, false);
+        window.addEventListener("online", function (e) {
+          enableInteraction();
+          // console.log("went online");
+        }, false);
 
-          window.addEventListener("offline", function (e) {
-            disableInteraction();
-            // console.log("went offline");
-          }, false);
-        }
+        window.addEventListener("offline", function (e) {
+          disableInteraction();
+          // console.log("went offline");
+        }, false);
+      }
     }
   };
 }]);

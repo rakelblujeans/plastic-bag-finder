@@ -12,9 +12,9 @@ angular.module('starter.services')
       };
 
       function disableInteraction(msg) {
-        $ionicLoading.show({
+        /*$ionicLoading.show({
           template: msg ? msg : 'Uhhm, internet?'
-        });
+        });*/
       };
 
       return {

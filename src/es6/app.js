@@ -1,6 +1,6 @@
 // Ionic Starter App
 angular.module('starter', [
-  'ionic', 'firebase', 'ngCordova',
+  'ionic', 'firebase', 'ngCordova', 'ngCordovaOauth',
   'starter.controllers', 'starter.services'
 ])
 

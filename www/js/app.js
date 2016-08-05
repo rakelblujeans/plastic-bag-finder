@@ -1,7 +1,7 @@
 'use strict';
 
 // Ionic Starter App
-angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'firebase', 'ngCordova', 'ngCordovaOauth', 'starter.controllers', 'starter.services'])
 
 // .config(function($compileProvider){
 //   $compileProvider.aHrefSanitizationWhitelist(/^\s*(geo):/);
